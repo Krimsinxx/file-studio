@@ -1,0 +1,76 @@
+name: Build Windows Dev Preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Select preview version bump'
+        required: true
+        type: choice
+        default: 'Bump Build'
+        options:
+          - 'Bump Build'
+          - 'Release'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-windows-dev:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Temporarily bump version in Cargo.toml
+        id: bump
+        shell: pwsh
+        run: |
+          $content = Get-Content Cargo.toml -Raw
+          if ($content -match '(?m)^version\s*=\s*"(\d+)\.(\d+)\.(\d+)"') {
+            $firstMajor = [int]$matches[1]
+            $secondMajor = [int]$matches[2]
+            $minor = [int]$matches[3]
+
+            if ("${{ inputs.release_type }}" -eq "Release") {
+              $secondMajor += 1
+              if ($secondMajor -gt 9) {
+                $firstMajor += 1
+                $secondMajor = 0
+              }
+              $minor = 0
+            } else {
+              $minor += 1
+            }
+
+            $newVersion = "$firstMajor.$secondMajor.$minor"
+            
+            # Update Cargo.toml locally on the runner only
+            $updated = $content -replace '(?m)^version\s*=\s*"\d+\.\d+\.\d+"', "version = `"$newVersion`""
+            Set-Content Cargo.toml $updated -NoNewline
+            
+            # Update Cargo.lock locally so cargo build succeeds
+            cargo update -w
+            
+            # Output the calculated version for the artifact name
+            echo "version=$newVersion" >> $env:GITHUB_OUTPUT
+          } else {
+            Write-Error "Could not find package version in Cargo.toml"
+            exit 1
+          }
+
+      - name: Cache Cargo dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build release binary
+        run: cargo build --release
+
+      - name: Upload Windows dev executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: file-studio-v${{ steps.bump.outputs.version }}-dev-preview
+          path: target/release/FileStudio.exe
