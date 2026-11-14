@@ -1,7 +1,16 @@
-name: Build Windows Minor Release
+name: Build Windows Release
 
 on:
   workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Select release type'
+        required: true
+        type: choice
+        default: 'Bump Build'
+        options:
+          - 'Bump Build'
+          - 'Release'
 
 permissions:
   contents: write
@@ -20,16 +29,28 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Bump patch version in Cargo.toml
+      - name: Bump version in Cargo.toml
         id: bump
         shell: pwsh
         run: |
           $content = Get-Content Cargo.toml -Raw
           if ($content -match '(?m)^version\s*=\s*"(\d+)\.(\d+)\.(\d+)"') {
-            $major = $matches[1]
-            $minor = $matches[2]
-            $patch = [int]$matches[3] + 1
-            $newVersion = "$major.$minor.$patch"
+            $firstMajor = [int]$matches[1]
+            $secondMajor = [int]$matches[2]
+            $minor = [int]$matches[3]
+
+            if ("${{ inputs.release_type }}" -eq "Release") {
+              $secondMajor += 1
+              if ($secondMajor -gt 9) {
+                $firstMajor += 1
+                $secondMajor = 0
+              }
+              $minor = 0
+            } else {
+              $minor += 1
+            }
+
+            $newVersion = "$firstMajor.$secondMajor.$minor"
             
             # Update Cargo.toml with the new version
             $updated = $content -replace '(?m)^version\s*=\s*"\d+\.\d+\.\d+"', "version = `"$newVersion`""
@@ -50,7 +71,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@://github.com"
           git add Cargo.toml Cargo.lock
-          git commit -m "chore: bump version to v${{ steps.bump.outputs.version }}"
+          git commit -m "chore: bump version to v${{ steps.bump.outputs.version }} (${{ inputs.release_type }})"
           git push
 
       - name: Cache Cargo dependencies
@@ -60,10 +81,10 @@ jobs:
         run: cargo build --release
 
       - name: Publish to GitHub Release
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.bump.outputs.version }}
-          name: v${{ steps.bump.outputs.version }} - Bump Build
+          name: v${{ steps.bump.outputs.version }} - ${{ inputs.release_type }}
           prerelease: false
           make_latest: true
           generate_release_notes: true
