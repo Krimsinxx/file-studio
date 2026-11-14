@@ -1,0 +1,14 @@
+{
+  "name": "VS Code Dark+",
+  "background": "#1E1E1E",
+  "surface": "#252526",
+  "surface_alt": "#333333",
+  "border": "#3C3C3C",
+  "foreground": "#D4D4D4",
+  "muted": "#858585",
+  "accent": "#007ACC",
+  "selection": "#264F78",
+  "success": "#4EC9B0",
+  "warning": "#DCDCAA",
+  "danger": "#F14C4C"
+}
