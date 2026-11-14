@@ -1,7 +1,7 @@
-name: Build Windows Pre-Release
+name: Build Windows Minor Release
 
 on:
-  workflow_dispatch: # No input needed anymore; version is calculated automatically
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -59,11 +59,12 @@ jobs:
       - name: Build release binary
         run: cargo build --release
 
-      - name: Publish to GitHub Pre-Release
+      - name: Publish to GitHub Release
         uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ steps.bump.outputs.version }}
           name: v${{ steps.bump.outputs.version }} - Bump Build
-          prerelease: true
+          prerelease: false
+          make_latest: true
           generate_release_notes: true
           files: target/release/FileStudio.exe
