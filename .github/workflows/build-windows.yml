@@ -1,11 +1,15 @@
-name: Build Windows App
+name: Build Windows Pre-Release
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch: # Allows manual runs from the Actions tab
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g., v0.1.0-alpha)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
 
 env:
   CARGO_TERM_COLOR: always
@@ -27,8 +31,11 @@ jobs:
       - name: Build release binary
         run: cargo build --release
 
-      - name: Upload Windows executable
-        uses: actions/upload-artifact@v4
+      - name: Publish to GitHub Pre-Release
+        uses: softprops/action-gh-release@v3
         with:
-          name: file-studio-latest
-          path: target/release/FileStudio.exe
+          tag_name: ${{ inputs.tag }}
+          name: ${{ inputs.tag }}
+          prerelease: true
+          generate_release_notes: true
+          files: target/release/FileStudio.exe
