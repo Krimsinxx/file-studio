@@ -75,7 +75,7 @@ jobs:
       - name: Publish to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.bump.outputs.version }}
+          tag_name: v${{ steps.bump.outputs.version }}-preview
           name: v${{ steps.bump.outputs.version }} - Preview
           prerelease: true
           make_latest: false
