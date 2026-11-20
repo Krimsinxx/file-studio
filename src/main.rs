@@ -322,6 +322,7 @@ fn view(app: &App) -> Element<'_, Message> {
             brand,
             container(titlebar_navigation)
                 .width(Fill)
+                .max_width(720)
                 .padding([0, 22]),
             save_state,
         ]
