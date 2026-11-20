@@ -298,7 +298,8 @@ fn view(app: &App) -> Element<'_, Message> {
             .on_submit(Message::Navigate)
             .size(12)
             .padding([7, 10])
-            .width(Fill),
+            .width(Fill)
+            .max_width(364),
         button(text("Go").size(11)).padding([7, 10]).on_press(Message::Navigate).style(button::secondary),
     ]
     .spacing(7)
@@ -322,7 +323,6 @@ fn view(app: &App) -> Element<'_, Message> {
             brand,
             container(titlebar_navigation)
                 .width(Fill)
-                .max_width(720)
                 .padding([0, 22]),
             save_state,
         ]
