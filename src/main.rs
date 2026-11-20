@@ -13,7 +13,7 @@ use theme::ThemeConfig;
 fn main() -> iced::Result {
     let icon = iced::window::icon::from_file_data(
         include_bytes!("../assets/icon.png"),
-        Some(iced::window::icon::image::ImageFormat::Png),
+        None,
     )
     .ok();
 
