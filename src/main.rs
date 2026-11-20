@@ -298,8 +298,7 @@ fn view(app: &App) -> Element<'_, Message> {
             .on_submit(Message::Navigate)
             .size(12)
             .padding([7, 10])
-            .width(340),
-        button(text("Go").size(11)).padding([7, 10]).on_press(Message::Navigate).style(button::secondary),
+            .width(364),
     ]
     .spacing(7)
     .align_y(Alignment::Center);
