@@ -1039,7 +1039,7 @@ dependencies = [
 
 [[package]]
 name = "file_studio"
-version = "0.2.12"
+version = "0.2.13"
 dependencies = [
  "iced",
  "rfd",
