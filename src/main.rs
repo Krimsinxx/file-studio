@@ -112,7 +112,7 @@ fn update(app: &mut App, message: Message) -> Task<Message> {
             app.dirty = false;
             app.status = "New file".into();
         }
-        Message::Save => app.save_file(),
+        Message::Save => return app.save_file(),
         Message::SaveAs => return app.save_file_as(),
         Message::SaveAsSelected(Some(path)) => app.write_file(path),
         Message::SaveAsSelected(None) => {},
@@ -166,11 +166,12 @@ impl App {
         }
     }
 
-    fn save_file(&mut self) {
+    fn save_file(&mut self) -> Task<Message> {
         if let Some(path) = self.active_file.clone() {
             self.write_file(path);
+            Task::none()
         } else {
-            self.save_file_as();
+            self.save_file_as()
         }
     }
 
