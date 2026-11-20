@@ -70,6 +70,7 @@ enum Message {
     NewFile,
     Save,
     SaveAs,
+    SaveAsSelected(Option<PathBuf>),
     Refresh,
     ImportTheme,
     UseVsCodeTheme,
@@ -112,7 +113,9 @@ fn update(app: &mut App, message: Message) -> Task<Message> {
             app.status = "New file".into();
         }
         Message::Save => app.save_file(),
-        Message::SaveAs => app.save_file_as(),
+        Message::SaveAs => return app.save_file_as(),
+        Message::SaveAsSelected(Some(path)) => app.write_file(path),
+        Message::SaveAsSelected(None) => {},
         Message::Refresh => app.read_directory(),
         Message::ImportTheme => app.import_theme(),
         Message::UseVsCodeTheme => app.set_theme(ThemeConfig::vscode_dark()),
@@ -171,10 +174,20 @@ impl App {
         }
     }
 
-    fn save_file_as(&mut self) {
-        if let Some(path) = rfd::FileDialog::new().set_directory(&self.current_dir).set_file_name("untitled.txt").save_file() {
-            self.write_file(path);
-        }
+    fn save_file_as(&self) -> Task<Message> {
+        let directory = self.current_dir.clone();
+
+        Task::perform(
+            async move {
+                rfd::AsyncFileDialog::new()
+                    .set_directory(directory)
+                    .set_file_name("untitled.txt")
+                    .save_file()
+                    .await
+                    .map(|file| file.path().to_path_buf())
+            },
+            Message::SaveAsSelected,
+        )
     }
 
     fn write_file(&mut self, path: PathBuf) {
