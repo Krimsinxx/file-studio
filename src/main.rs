@@ -6,7 +6,7 @@ use std::{fs, path::PathBuf};
 
 use iced::{
     Alignment, Background, Border, Color, Element, Fill, Task, Theme,
-    widget::{button, column, container, row, scrollable, text, text_editor, text_input},
+    widget::{button, column, container, image, row, scrollable, text, text_editor, text_input},
 };
 use theme::ThemeConfig;
 
@@ -269,7 +269,9 @@ fn view(app: &App) -> Element<'_, Message> {
     let accent = ThemeConfig::color(&c.accent);
 
     let brand = row![
-        container(text("F").size(17).color(Color::WHITE)).padding([5, 10]).style(panel_style(accent, accent)),
+        image(image::Handle::from_bytes(include_bytes!("../assets/icon.png").as_slice()))
+            .width(40)
+            .height(40),
         column![
             text("FILE STUDIO").size(13).color(fg),
             text("WORKSPACE").size(9).color(muted)
