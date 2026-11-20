@@ -66,6 +66,14 @@ jobs:
             exit 1
           }
 
+      - name: Commit and push version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@://github.com"
+          git add Cargo.toml Cargo.lock
+          git commit -m "chore: bump version to v${{ steps.bump.outputs.version }} (${{ inputs.release_type }})"
+          git push
+
       - name: Cache Cargo dependencies
         uses: Swatinem/rust-cache@v2
 
