@@ -298,7 +298,7 @@ fn view(app: &App) -> Element<'_, Message> {
             .on_submit(Message::Navigate)
             .size(12)
             .padding([7, 10])
-            .width(364),
+            .width(340),
         button(text("Go").size(11)).padding([7, 10]).on_press(Message::Navigate).style(button::secondary),
     ]
     .spacing(7)
@@ -320,12 +320,16 @@ fn view(app: &App) -> Element<'_, Message> {
     let titlebar = container(
         row![
             brand,
-            container(titlebar_navigation)
+            container(row![
+                iced::widget::Space::new().width(Fill),
+                titlebar_navigation,
+                iced::widget::Space::new().width(Fill),
+            ].align_y(Alignment::Center))
                 .width(Fill)
-                .padding([0, 22]),
+                .padding([0, 18]),
             save_state,
         ]
-        .spacing(64)
+        .spacing(20)
         .align_y(Alignment::Center),
     )
     .padding([9, 16])
