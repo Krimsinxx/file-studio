@@ -281,14 +281,14 @@ fn view(app: &App) -> Element<'_, Message> {
     let titlebar_navigation = row![
         button(text("Save").size(11)).padding([7, 10]).on_press(Message::Save).style(button::secondary),
         button(text("Save As").size(11)).padding([7, 10]).on_press(Message::SaveAs).style(button::secondary),
-        button(text("↑").size(14)).padding([7, 10]).on_press(Message::GoUp).style(button::secondary),
+        button(text("↑").size(14)).padding([7, 11]).on_press(Message::GoUp).style(button::secondary),
         text_input("Current directory", &app.path_input)
             .on_input(Message::PathChanged)
             .on_submit(Message::Navigate)
             .size(12)
             .padding([8, 11])
             .width(Fill),
-        button(text("Go").size(11)).padding([8, 12]).on_press(Message::Navigate).style(button::secondary),
+        button(text("Go").size(11)).padding([8, 13]).on_press(Message::Navigate).style(button::secondary),
     ]
     .spacing(7)
     .align_y(Alignment::Center);
