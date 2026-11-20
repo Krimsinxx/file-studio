@@ -11,12 +11,20 @@ use iced::{
 use theme::ThemeConfig;
 
 fn main() -> iced::Result {
+    let icon = iced::window::icon::from_file_data(
+        include_bytes!("../assets/icon.png"),
+        Some(iced::window::icon::image::ImageFormat::Png),
+    )
+    .ok();
+
     iced::application(App::default, update, view)
-        .title("File Studio")
+        .title("")
         .theme(|app: &App| app.theme.iced_theme())
         .window(iced::window::Settings {
             size: iced::Size::new(1280.0, 720.0),
-            min_size: Some(iced::Size::new(650.0, 450.0)),
+            min_size: Some(iced::Size::new(650.0, 450.0),
+            ),
+            icon,
             ..iced::window::Settings::default()
         })
         .run()
