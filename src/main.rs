@@ -317,7 +317,7 @@ fn view(app: &App) -> Element<'_, Message> {
                 .padding([0, 22]),
             save_state,
         ]
-        .spacing(24)
+        .spacing(64)
         .align_y(Alignment::Center),
     )
     .padding([9, 16])
