@@ -298,8 +298,7 @@ fn view(app: &App) -> Element<'_, Message> {
             .on_submit(Message::Navigate)
             .size(12)
             .padding([7, 10])
-            .width(Fill)
-            .max_width(364),
+            .width(364),
         button(text("Go").size(11)).padding([7, 10]).on_press(Message::Navigate).style(button::secondary),
     ]
     .spacing(7)
