@@ -9,6 +9,8 @@ fn main() {
 
     // res.set_manifest_file("windows.manifest");
 
+    res.set_icon("assets/icon.ico");
+
     res.set("ProductName", "File Studio");
     res.set("FileDescription", "File Explorer and Text Editor");
     res.set("CompanyName", "Krimsinx");
